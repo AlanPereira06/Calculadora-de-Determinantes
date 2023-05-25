@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <link rel="stylesheet" href="styles.css">
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Rubik+Puddles&display=swap" rel="stylesheet">
+        <title>Calculadora de Determinantes</title>
+        <script>
+            // Dimension of input square matrix
+            var N;
+        
+            // Function to get determinant of matrix
+            function determinantOfMatrix(mat, n) {
+                var num1, num2, det = 1, index,
+                    total = 1; // Initialize result
+            
+                // temporary array for storing row
+                var temp = Array(n + 1).fill(0);
+            
+                // loop for traversing the diagonal elements
+                for (i = 0; i < n; i++) {
+                    index = i; // initialize the index
+                
+                    // finding the index which has non zero value
+                    while (index < n && mat[index][i] == 0) {
+                        index++;
+                    }
+                    if (index == n) // if there is non zero element
+                    {
+                        // the determinant of matrix as zero
+                        continue;
+                    }
+                    if (index != i) {
+                        // loop for swapping the diagonal element row
+                        // and index row
+                        for (j = 0; j < n; j++) {
+                            swap(mat, index, j, i, j);
+                        }
+                        // determinant sign changes when we shift
+                        // rows go through determinant properties
+                        det = parseInt((det * Math.pow(-1, index - i)));
+                    }
+                
+                    // storing the values of diagonal row elements
+                    for (j = 0; j < n; j++) {
+                        temp[j] = mat[i][j];
+                    }
+                
+                    // traversing every row below the diagonal
+                    // element
+                    for (j = i + 1; j < n; j++) {
+                        num1 = temp[i]; // value of diagonal element
+                        num2 = mat[j]
+                            [i]; // value of next row element
+                    
+                        // traversing every column of row
+                        // and multiplying to every row
+                        for (k = 0; k < n; k++) {
+                            // multiplying to make the diagonal
+                            // element and next row element equal
+                            mat[j][k] = (num1 * mat[j][k])
+                                - (num2 * temp[k]);
+                        }
+                        total = total * num1; // Det(kA)=kDet(A);
+                    }
+                }
+            
+                // multiplying the diagonal elements to get
+                // determinant
+                for (i = 0; i < n; i++) {
+                    det = det * mat[i][i];
+                }
+                return (det / total); // Det(kA)/k=Det(A);
+            }
+        
+            function swap(arr, i1, j1, i2, j2) {
+                var temp = arr[i1][j1];
+                arr[i1][j1] = arr[i2][j2];
+                arr[i2][j2] = temp;
+                return arr;
+            }
+        
+            function calculateDeterminant() {
+                // Create an empty matrix
+                var mat = [];
+                for (i = 0; i < N; i++) {
+                    mat[i] = [];
+                }
+            
+                // Prompt the user to enter the matrix values
+                for (i = 0; i < N; i++) {
+                    for (j = 0; j < N; j++) {
+                        var value = parseInt(document.getElementById("input-" + i + "-" + j).value);
+                        mat[i][j] = value;
+                    }
+                }
+            
+                // Calculate the determinant
+                var determinant = determinantOfMatrix(mat,N);
+                // Display the determinant result
+                var resultElement = document.getElementById("result");
+                resultElement.textContent = "El determinante de la matriz es: " + determinant;
+            }
+        </script>
+    </head>
+    <body>
+        <img src="data:image/png;base64,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" class="image">
+        <h1 id="titulo">Calculadora de Determinantes</h1>
+        <p class="sub-title">Ingrese los valores de una matriz cuadrada:</p>
+        <input type="number" id="size" placeholder="Tamaño de la matriz" class="tamaño">
+        <button onclick="createMatrix()" class="boton">Crear Matriz</button>
+        <div id="matrixContainer"></div>
+        <button onclick="calculateDeterminant()" class="boton">Calcular Determinante</button>
+        <p id="result"></p>
+        <script>
+            function createMatrix() {
+                var sizeInput = document.getElementById("size");
+                var size = parseInt(sizeInput.value);
+            
+                if (isNaN(size) || size < 1) {
+                    alert("Ingrese un tamaño válido para la matriz.");
+                    return;
+                }
+            
+                N = size;
+            
+                var matrixContainer = document.getElementById("matrixContainer");
+                matrixContainer.innerHTML = "";
+            
+                for (i = 0; i < N; i++) {
+                    for (j = 0; j < N; j++) {
+                        var input = document.createElement("input");
+                        input.setAttribute("type", "number");
+                        input.setAttribute("id", "input-" + i + "-" + j);
+                        input.setAttribute("placeholder", "Valor [" + i + "][" + j + "]");
+                        matrixContainer.appendChild(input);
+                    }
+                    matrixContainer.appendChild(document.createElement("br"));
+                }
+            }
+        </script>
+    </body>
+</html>
